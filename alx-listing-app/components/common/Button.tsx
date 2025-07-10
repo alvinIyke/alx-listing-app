@@ -1,0 +1,19 @@
+components/Button.js
+import { forwardRef } from 'react'
+import Link from 'next/link'
+import {
+    ArrowRightIcon,
+    HeartIcon,
+    PhoneIcon,
+    EyeIcon,  BookmarkIcon,  ShareIcon,  CheckIcon,  XMarkIcon,  ArrowPathIcon} from '@heroicons/react/24/outline'
+const Button = forwardRef(({   children,   variant = 'primary',   size = 'md',   icon,   iconPosition = 'left',  disabled = false,  loading = false,  fullWidth = false,  href,  onClick,  type = 'button',  className = '',  ...props}, ref) => {    // Base styles  const baseStyles = `    inline-flex items-center justify-center font-medium rounded-lg    transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2    disabled:opacity-50 disabled:cursor-not-allowed    ${fullWidth ? 'w-full' : ''}    ${className}  `
+   Variant styles  const variants = {    primary: `      bg-blue-600 hover:bg-blue-700 text-white      focus:ring-blue-500 shadow-sm hover:shadow-md      disabled:bg-blue-400    `,    secondary: `      bg-gray-100 hover:bg-gray-200 text-gray-900      focus:ring-gray-500 border border-gray-300      disabled:bg-gray-50 disabled:text-gray-400    `,    outline: `      bg-transparent border-2 border-blue-600 text-blue-600      hover:bg-blue-600 hover:text-white      focus:ring-blue-500      disabled:border-gray-300 disabled:text-gray-400    `,    ghost: `      bg-transparent text-gray-700 hover:bg-gray-100      focus:ring-gray-500      disabled:text-gray-400    `,    danger: `      bg-red-600 hover:bg-red-700 text-white      focus:ring-red-500 shadow-sm hover:shadow-md      disabled:bg-red-400    `,    success: `      bg-green-600 hover:bg-green-700 text-white      focus:ring-green-500 shadow-sm hover:shadow-md      disabled:bg-green-400    `,    warning: `      bg-yellow-500 hover:bg-yellow-600 text-white      focus:ring-yellow-500 shadow-sm hover:shadow-md      disabled:bg-yellow-400    `  }
+  Size styles  const sizes = {    xs: 'px-2 py-1 text-xs',    sm: 'px-3 py-1.5 text-sm',    md: 'px-4 py-2 text-sm',    lg: 'px-6 py-3 text-base',    xl: 'px-8 py-4 text-lg'  }
+   Icon mapping  const iconMap = {    arrow: ArrowRightIcon,    heart: HeartIcon,    phone: PhoneIcon,    eye: EyeIcon,    bookmark: BookmarkIcon,    share: ShareIcon,    check: CheckIcon,    close: XMarkIcon,    loading: ArrowPathIcon  }
+   Get icon component  const getIcon = () => {    if (loading) {      const LoadingIcon = iconMap.loading      return <LoadingIcon className="h-4 w-4 animate-spin" />    }        if (icon) {      const IconComponent = iconMap[icon] || icon      return <IconComponent className="h-4 w-4" />    }        return null  }
+   Combine classes  const buttonClasses = `    ${baseStyles}    ${variants[variant]}    ${sizes[size]}  `.trim().replace(/\s+/g, ' ')
+   Button content  const buttonContent = (    <>      {iconPosition === 'left' && getIcon() && (        <span className={children ? 'mr-2' : ''}>          {getIcon()}        </span>      )}            {loading ? 'Loading...' : children}            {iconPosition === 'right' && getIcon() && !loading && (        <span className={children ? 'ml-2' : ''}>          {getIcon()}        </span>      )}    </>  )
+   If href is provided, render as Link  if (href && !disabled) {    return (      <Link href={href} className={buttonClasses} ref={ref} {...props}>        {buttonContent}      </Link>    )  }
+   Regular button  return (    <button      ref={ref}      type={type}      onClick={onClick}      disabled={disabled || loading}      className={buttonClasses}      {...props}    >      {buttonContent}    </button>  )})
+Button.displayName = 'Button'
+export default Button
